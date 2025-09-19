@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, MessageCircle } from "lucide-react";
+import logoImage from "@/assets/journey-Logo .jpg";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,7 +13,7 @@ const Header = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -26,7 +27,7 @@ const Header = () => {
   ];
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/1234567890?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
+    window.open("https://wa.me/9845742597?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
   };
 
   return (
@@ -34,16 +35,18 @@ const Header = () => {
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded-md z-50">
         Skip to main content
       </a>
-      <header className={`fixed top-0 w-full z-40 transition-smooth ${
-        isScrolled ? "bg-background/95 backdrop-blur-md shadow-medium" : "bg-transparent"
-      }`}>
+      <header className={`fixed top-0 w-full z-40 transition-smooth ${isScrolled ? "bg-background/95 backdrop-blur-md shadow-medium" : "bg-transparent"
+        }`}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-ocean rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">HF</span>
-              </div>
+              {/* Your image logo */}
+              <img
+                src={logoImage}
+                alt="Happy Feet Holidays Logo"
+                className="w-14 h-14 rounded-full object-cover"
+              />
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-foreground">Happy Feet Holidays</h1>
                 <p className="text-xs text-muted-foreground">& Resorts</p>
@@ -56,11 +59,10 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm font-medium transition-smooth hover:text-primary ${
-                    location.pathname === item.href 
-                      ? "text-primary border-b-2 border-primary" 
-                      : "text-foreground"
-                  }`}
+                  className={`text-sm font-medium transition-smooth hover:text-primary ${location.pathname === item.href
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-foreground"
+                    }`}
                 >
                   {item.name}
                 </Link>
@@ -101,11 +103,10 @@ const Header = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`block px-3 py-2 rounded-md text-base font-medium transition-smooth ${
-                      location.pathname === item.href
-                        ? "text-primary bg-primary/10"
-                        : "text-foreground hover:bg-accent"
-                    }`}
+                    className={`block px-3 py-2 rounded-md text-base font-medium transition-smooth ${location.pathname === item.href
+                      ? "text-primary bg-primary/10"
+                      : "text-foreground hover:bg-accent"
+                      }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.name}

@@ -135,7 +135,7 @@ const Enquiry = () => {
                       <Mail className="w-5 h-5 text-primary mt-1" />
                       <div>
                         <p className="font-medium text-foreground">Email Us</p>
-                        <p className="text-sm text-muted-foreground">hello@happyfeetholidays.com</p>
+                        <p className="text-sm text-muted-foreground">Info@happyfeetholidaysresorts.com</p>
                         <p className="text-xs text-muted-foreground">We respond within 24 hours</p>
                       </div>
                     </div>

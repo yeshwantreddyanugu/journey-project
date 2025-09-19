@@ -49,11 +49,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>+91 98765 43210</span>
+                <span>+91 9845742597</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>hello@happyfeetholidays.com</span>
+                <span>Info@happyfeetholidaysresorts.com</span>
               </div>
             </div>
           </div>
