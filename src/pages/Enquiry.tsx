@@ -17,25 +17,116 @@ import {
   MessageCircle,
   CheckCircle,
   Phone,
-  Mail
+  Mail,
+  Loader2
 } from "lucide-react";
 
 const Enquiry = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [whatsAppOptIn, setWhatsAppOptIn] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    departureCity: "",
+    preferredDestination: "",
+    preferredTravelDate: "",
+    duration: "",
+    numberOfAdults: "",
+    numberOfChildren: "",
+    approximateBudget: "",
+    specialPreferences: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true);
-      toast.success("Enquiry submitted successfully! We'll get back to you within 24 hours.");
-    }, 1000);
+    setIsSubmitting(true);
+
+    // Prepare the data to send
+    const requestData = {
+      fullName: formData.fullName,
+      emailAddress: formData.emailAddress,
+      phoneNumber: formData.phoneNumber,
+      departureCity: formData.departureCity,
+      preferredDestination: formData.preferredDestination,
+      preferredTravelDate: formData.preferredTravelDate,
+      duration: formData.duration ? parseInt(formData.duration) : null,
+      numberOfAdults: formData.numberOfAdults ? parseInt(formData.numberOfAdults) : null,
+      numberOfChildren: formData.numberOfChildren ? parseInt(formData.numberOfChildren) : null,
+      approximateBudget: formData.approximateBudget,
+      specialPreferences: formData.specialPreferences
+    };
+
+    // Log what we're sending
+    console.log("=== ENQUIRY FORM SUBMISSION ===");
+    console.log("Endpoint:", "https://apilunchbox.lytortech.com/api/travel/enquiry");
+    console.log("Method:", "POST");
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+    });
+    console.log("Request Data:", requestData);
+    console.log("Request Body (JSON String):", JSON.stringify(requestData, null, 2));
+    console.log("WhatsApp Opt-in:", whatsAppOptIn);
+    console.log("===========================");
+
+    try {
+      const response = await fetch("https://apilunchbox.lytortech.com/api/travel/enquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      // Log response details
+      console.log("=== RESPONSE DETAILS ===");
+      console.log("Status:", response.status);
+      console.log("Status Text:", response.statusText);
+      console.log("Headers:", Object.fromEntries(response.headers.entries()));
+      console.log("========================");
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("✅ Success Response:", result);
+        setIsSubmitted(true);
+        toast.success("Enquiry submitted successfully! We'll get back to you within 24 hours.");
+      } else {
+        const errorData = await response.json();
+        console.log("❌ Error Response:", errorData);
+        toast.error(errorData.message || "Failed to submit enquiry. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ Network/Fetch Error:", error);
+      console.log("Error details:", {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      toast.error("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+      console.log("=== ENQUIRY SUBMISSION COMPLETED ===");
+    }
   };
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/1234567890?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
+    window.open("https://wa.me/9845018635?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
   };
 
   if (isSubmitted) {
@@ -80,7 +171,24 @@ const Enquiry = () => {
                 Chat with us on WhatsApp
               </Button>
               
-              <Button variant="outline" size="lg" className="w-full" onClick={() => setIsSubmitted(false)}>
+              <Button variant="outline" size="lg" className="w-full" onClick={() => {
+                setIsSubmitted(false);
+                // Reset form data
+                setFormData({
+                  fullName: "",
+                  emailAddress: "",
+                  phoneNumber: "",
+                  departureCity: "",
+                  preferredDestination: "",
+                  preferredTravelDate: "",
+                  duration: "",
+                  numberOfAdults: "",
+                  numberOfChildren: "",
+                  approximateBudget: "",
+                  specialPreferences: ""
+                });
+                setWhatsAppOptIn(false);
+              }}>
                 Submit Another Enquiry
               </Button>
             </div>
@@ -88,8 +196,8 @@ const Enquiry = () => {
             <div className="mt-8 pt-6 border-t border-border text-center">
               <p className="text-sm text-muted-foreground">
                 Need immediate assistance? Call us at{" "}
-                <a href="tel:+919876543210" className="text-primary hover:underline font-medium">
-                  +91 98765 43210
+                <a href="tel:+919845018635" className="text-primary hover:underline font-medium">
+                  +91 9845018635
                 </a>
               </p>
             </div>
@@ -126,7 +234,7 @@ const Enquiry = () => {
                       <Phone className="w-5 h-5 text-primary mt-1" />
                       <div>
                         <p className="font-medium text-foreground">Call Us</p>
-                        <p className="text-sm text-muted-foreground">+91 98765 43210</p>
+                        <p className="text-sm text-muted-foreground">+91 9845018635</p>
                         <p className="text-xs text-muted-foreground">Mon-Sat, 9 AM - 7 PM</p>
                       </div>
                     </div>
@@ -135,7 +243,7 @@ const Enquiry = () => {
                       <Mail className="w-5 h-5 text-primary mt-1" />
                       <div>
                         <p className="font-medium text-foreground">Email Us</p>
-                        <p className="text-sm text-muted-foreground">Info@happyfeetholidaysresorts.com</p>
+                        <p className="text-sm text-muted-foreground">Happyfeetholidayss@gmail.com</p>
                         <p className="text-xs text-muted-foreground">We respond within 24 hours</p>
                       </div>
                     </div>
@@ -192,23 +300,56 @@ const Enquiry = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="name">Full Name *</Label>
-                          <Input id="name" name="name" required placeholder="John Doe" />
+                          <Label htmlFor="fullName">Full Name *</Label>
+                          <Input 
+                            id="fullName" 
+                            name="fullName" 
+                            required 
+                            placeholder="John Doe"
+                            value={formData.fullName}
+                            onChange={handleInputChange}
+                            disabled={isSubmitting}
+                          />
                         </div>
                         <div>
-                          <Label htmlFor="email">Email Address *</Label>
-                          <Input id="email" name="email" type="email" required placeholder="john@example.com" />
+                          <Label htmlFor="emailAddress">Email Address *</Label>
+                          <Input 
+                            id="emailAddress" 
+                            name="emailAddress" 
+                            type="email" 
+                            required 
+                            placeholder="john@example.com"
+                            value={formData.emailAddress}
+                            onChange={handleInputChange}
+                            disabled={isSubmitting}
+                          />
                         </div>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="phone">Phone Number *</Label>
-                          <Input id="phone" name="phone" type="tel" required placeholder="+91 98765 43210" />
+                          <Label htmlFor="phoneNumber">Phone Number *</Label>
+                          <Input 
+                            id="phoneNumber" 
+                            name="phoneNumber" 
+                            type="tel" 
+                            required 
+                            placeholder="+91 98765 43210"
+                            value={formData.phoneNumber}
+                            onChange={handleInputChange}
+                            disabled={isSubmitting}
+                          />
                         </div>
                         <div>
-                          <Label htmlFor="departure-city">Departure City</Label>
-                          <Input id="departure-city" name="departureCity" placeholder="Mumbai" />
+                          <Label htmlFor="departureCity">Departure City</Label>
+                          <Input 
+                            id="departureCity" 
+                            name="departureCity" 
+                            placeholder="Mumbai"
+                            value={formData.departureCity}
+                            onChange={handleInputChange}
+                            disabled={isSubmitting}
+                          />
                         </div>
                       </div>
                     </div>
@@ -223,8 +364,14 @@ const Enquiry = () => {
                       </h3>
                       
                       <div>
-                        <Label htmlFor="destination">Preferred Destination/Experience *</Label>
-                        <Select name="destination" required>
+                        <Label htmlFor="preferredDestination">Preferred Destination/Experience *</Label>
+                        <Select 
+                          name="preferredDestination" 
+                          required 
+                          value={formData.preferredDestination}
+                          onValueChange={(value) => handleSelectChange('preferredDestination', value)}
+                          disabled={isSubmitting}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select your preferred experience" />
                           </SelectTrigger>
@@ -244,20 +391,32 @@ const Enquiry = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="travel-dates">Preferred Travel Dates</Label>
-                          <Input id="travel-dates" name="travelDates" type="date" />
+                          <Label htmlFor="preferredTravelDate">Preferred Travel Dates</Label>
+                          <Input 
+                            id="preferredTravelDate" 
+                            name="preferredTravelDate" 
+                            type="date"
+                            value={formData.preferredTravelDate}
+                            onChange={handleInputChange}
+                            disabled={isSubmitting}
+                          />
                         </div>
                         <div>
                           <Label htmlFor="duration">Duration (Days)</Label>
-                          <Select name="duration">
+                          <Select 
+                            name="duration"
+                            value={formData.duration}
+                            onValueChange={(value) => handleSelectChange('duration', value)}
+                            disabled={isSubmitting}
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Select duration" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="3-5">3-5 Days</SelectItem>
-                              <SelectItem value="6-10">6-10 Days</SelectItem>
-                              <SelectItem value="11-15">11-15 Days</SelectItem>
-                              <SelectItem value="15+">15+ Days</SelectItem>
+                              <SelectItem value="3">3-5 Days</SelectItem>
+                              <SelectItem value="7">6-10 Days</SelectItem>
+                              <SelectItem value="12">11-15 Days</SelectItem>
+                              <SelectItem value="20">15+ Days</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -265,8 +424,13 @@ const Enquiry = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="adults">Number of Adults</Label>
-                          <Select name="adults">
+                          <Label htmlFor="numberOfAdults">Number of Adults</Label>
+                          <Select 
+                            name="numberOfAdults"
+                            value={formData.numberOfAdults}
+                            onValueChange={(value) => handleSelectChange('numberOfAdults', value)}
+                            disabled={isSubmitting}
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Adults" />
                             </SelectTrigger>
@@ -275,13 +439,18 @@ const Enquiry = () => {
                               <SelectItem value="2">2 Adults</SelectItem>
                               <SelectItem value="3">3 Adults</SelectItem>
                               <SelectItem value="4">4 Adults</SelectItem>
-                              <SelectItem value="5+">5+ Adults</SelectItem>
+                              <SelectItem value="5">5+ Adults</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                         <div>
-                          <Label htmlFor="children">Number of Children</Label>
-                          <Select name="children">
+                          <Label htmlFor="numberOfChildren">Number of Children</Label>
+                          <Select 
+                            name="numberOfChildren"
+                            value={formData.numberOfChildren}
+                            onValueChange={(value) => handleSelectChange('numberOfChildren', value)}
+                            disabled={isSubmitting}
+                          >
                             <SelectTrigger>
                               <SelectValue placeholder="Children" />
                             </SelectTrigger>
@@ -290,23 +459,28 @@ const Enquiry = () => {
                               <SelectItem value="1">1 Child</SelectItem>
                               <SelectItem value="2">2 Children</SelectItem>
                               <SelectItem value="3">3 Children</SelectItem>
-                              <SelectItem value="4+">4+ Children</SelectItem>
+                              <SelectItem value="4">4+ Children</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
                       </div>
 
                       <div>
-                        <Label htmlFor="budget">Approximate Budget Range (Per Person)</Label>
-                        <Select name="budget">
+                        <Label htmlFor="approximateBudget">Approximate Budget Range (Per Person)</Label>
+                        <Select 
+                          name="approximateBudget"
+                          value={formData.approximateBudget}
+                          onValueChange={(value) => handleSelectChange('approximateBudget', value)}
+                          disabled={isSubmitting}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select budget range" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="budget">Budget Friendly (₹10,000 - ₹25,000)</SelectItem>
-                            <SelectItem value="mid-range">Mid-Range (₹25,000 - ₹50,000)</SelectItem>
-                            <SelectItem value="premium">Premium (₹50,000 - ₹1,00,000)</SelectItem>
-                            <SelectItem value="luxury">Luxury (₹1,00,000+)</SelectItem>
+                            <SelectItem value="10000-25000">Budget Friendly (₹10,000 - ₹25,000)</SelectItem>
+                            <SelectItem value="25000-50000">Mid-Range (₹25,000 - ₹50,000)</SelectItem>
+                            <SelectItem value="50000-100000">Premium (₹50,000 - ₹1,00,000)</SelectItem>
+                            <SelectItem value="100000+">Luxury (₹1,00,000+)</SelectItem>
                             <SelectItem value="discuss">Prefer to Discuss</SelectItem>
                           </SelectContent>
                         </Select>
@@ -320,12 +494,15 @@ const Enquiry = () => {
                       <h3 className="text-lg font-semibold text-foreground">Additional Information</h3>
                       
                       <div>
-                        <Label htmlFor="preferences">Special Preferences/Requirements</Label>
+                        <Label htmlFor="specialPreferences">Special Preferences/Requirements</Label>
                         <Textarea 
-                          id="preferences" 
-                          name="preferences" 
+                          id="specialPreferences" 
+                          name="specialPreferences" 
                           placeholder="Tell us about any specific interests, dietary requirements, accessibility needs, or special occasions..."
                           className="min-h-[120px]"
+                          value={formData.specialPreferences}
+                          onChange={handleInputChange}
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -334,6 +511,7 @@ const Enquiry = () => {
                           id="whatsapp-updates" 
                           checked={whatsAppOptIn}
                           onCheckedChange={(checked) => setWhatsAppOptIn(checked === true)}
+                          disabled={isSubmitting}
                         />
                         <Label htmlFor="whatsapp-updates" className="text-sm">
                           Send me itineraries and updates on WhatsApp
@@ -343,9 +521,24 @@ const Enquiry = () => {
 
                     {/* Submit Button */}
                     <div className="pt-4">
-                      <Button type="submit" variant="hero" size="lg" className="w-full">
-                        <Send className="w-5 h-5" />
-                        Submit Enquiry
+                      <Button 
+                        type="submit" 
+                        variant="hero" 
+                        size="lg" 
+                        className="w-full"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Submitting Enquiry...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-5 h-5" />
+                            Submit Enquiry
+                          </>
+                        )}
                       </Button>
                       <p className="text-xs text-muted-foreground text-center mt-2">
                         We'll respond within 24 hours with a personalized travel proposal

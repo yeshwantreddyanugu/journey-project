@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,13 +18,98 @@ import {
   Globe,
   Facebook,
   Instagram,
-  Twitter
+  Twitter,
+  Loader2
 } from "lucide-react";
 
 const Contact = () => {
-  const handleQuickEnquirySubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleQuickEnquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll get back to you shortly.");
+    setIsSubmitting(true);
+
+    // Prepare the data to send
+    const requestData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      subject: formData.subject || "Travel Enquiry",
+      message: formData.message
+    };
+
+    // Log what we're sending
+    console.log("=== CONTACT FORM SUBMISSION ===");
+    console.log("Endpoint:", "https://apilunchbox.lytortech.com/api/travel/submit");
+    console.log("Method:", "POST");
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+    });
+    console.log("Request Data:", requestData);
+    console.log("Request Body (JSON String):", JSON.stringify(requestData, null, 2));
+    console.log("================================");
+
+    try {
+      const response = await fetch("https://apilunchbox.lytortech.com/api/travel/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      // Log response details
+      console.log("=== RESPONSE DETAILS ===");
+      console.log("Status:", response.status);
+      console.log("Status Text:", response.statusText);
+      console.log("Headers:", Object.fromEntries(response.headers.entries()));
+      console.log("========================");
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("✅ Success Response:", result);
+        toast.success("Thank you! We'll get back to you shortly.");
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: ""
+        });
+      } else {
+        const errorData = await response.json();
+        console.log("❌ Error Response:", errorData);
+        toast.error(errorData.message || "Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("❌ Network/Fetch Error:", error);
+      console.log("Error details:", {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      toast.error("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+      console.log("=== FORM SUBMISSION COMPLETED ===");
+    }
   };
 
   const handleWhatsAppClick = () => {
@@ -182,22 +267,54 @@ const Contact = () => {
                 <form onSubmit={handleQuickEnquirySubmit} className="space-y-4">
                   <div>
                     <Label htmlFor="quick-name">Name *</Label>
-                    <Input id="quick-name" name="name" required placeholder="Your name" />
+                    <Input 
+                      id="quick-name" 
+                      name="name" 
+                      required 
+                      placeholder="Your name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   
                   <div>
                     <Label htmlFor="quick-email">Email *</Label>
-                    <Input id="quick-email" name="email" type="email" required placeholder="your@email.com" />
+                    <Input 
+                      id="quick-email" 
+                      name="email" 
+                      type="email" 
+                      required 
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   
                   <div>
                     <Label htmlFor="quick-phone">Phone</Label>
-                    <Input id="quick-phone" name="phone" type="tel" placeholder="+91 98765 43210" />
+                    <Input 
+                      id="quick-phone" 
+                      name="phone" 
+                      type="tel" 
+                      placeholder="+91 98765 43210"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   
                   <div>
                     <Label htmlFor="quick-subject">Subject</Label>
-                    <Input id="quick-subject" name="subject" placeholder="Travel enquiry" />
+                    <Input 
+                      id="quick-subject" 
+                      name="subject" 
+                      placeholder="Travel enquiry"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   
                   <div>
@@ -208,12 +325,30 @@ const Contact = () => {
                       required 
                       placeholder="Tell us how we can help you..."
                       className="min-h-[100px]"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
-                  <Button type="submit" variant="hero" size="lg" className="w-full">
-                    <Send className="w-4 h-4" />
-                    Send Message
+                  <Button 
+                    type="submit" 
+                    variant="hero" 
+                    size="lg" 
+                    className="w-full"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Send Message
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
