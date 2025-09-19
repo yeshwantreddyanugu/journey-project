@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, MessageCircle } from "lucide-react";
-import logoImage from "@/assets/journey-Logo .jpg";
+import logoImage from "@/assets/journey-Logo.jpg";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
