@@ -5,7 +5,7 @@ import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, MessageCircle } from
 
 const Footer = () => {
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/1234567890?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
+    window.open("https://wa.me/9845742597?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
   };
 
   const quickLinks = [
@@ -45,7 +45,9 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>123 Travel Street, Tourism District, City 12345</span>
+                <span>No.115/26/A/1, Shop No.2, Poorna Pragna Layout
+                      10th Main Road, Cauvery Nagar, Banashankari Stage 3
+                      Bengaluru 560085</span>   
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
@@ -108,7 +110,7 @@ const Footer = () => {
               </Button>
             </div>
 
-            <div>
+            {/* <div>
               <p className="text-sm text-muted-foreground mb-3">Follow Us</p>
               <div className="flex space-x-3">
                 {socialLinks.map((social) => {
@@ -125,7 +127,7 @@ const Footer = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -133,7 +135,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground text-center md:text-left">
-              © 2024 Happy Feet Holidays & Resorts. All rights reserved.
+              © 2025 Happy Feet Holidays & Resorts. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm text-muted-foreground">
               <Link to="/privacy" className="hover:text-primary transition-smooth">

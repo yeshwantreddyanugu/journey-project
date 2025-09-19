@@ -23,7 +23,7 @@ import familyImage from "@/assets/family-getaway.jpg";
 
 const Home = () => {
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/9845018635?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
+    window.open("https://wa.me/9845718635?text=Hi%20Happy%20Feet%20Holidays,%20I%27d%20like%20help%20planning%20a%20trip.", "_blank");
   };
 
   const experiences = [
@@ -136,7 +136,7 @@ const Home = () => {
         
         <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Curated Holidays.{" "}
+            Happy Feet Holidays.{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
               Unforgettable Memories.
             </span>
@@ -213,7 +213,7 @@ const Home = () => {
                           {inclusion}
                         </li>
                       ))}
-                      <li className="text-sm text-primary font-medium">+ More inclusions</li>
+                      {/* <li className="text-sm text-primary font-medium">+ More inclusions</li> */}
                     </ul>
                   </div>
 
